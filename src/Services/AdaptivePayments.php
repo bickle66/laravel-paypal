@@ -197,9 +197,16 @@ class AdaptivePayments
         return collect($receivers)->map(function ($receiver) {
             $item = [];
 
-            $item['receiver'] = [
-                'email' => $receiver['email'],
-            ];
+            if(!empty($receiver['email'])) {
+              $item['receiver'] = [
+                  'email' => $receiver['email'],
+              ];
+            }
+            if(!empty($receiver['accountId'])) {
+              $item['receiver'] = [
+                  'accountId' => $receiver['accountId'],
+              ];
+            }
 
             $item['invoiceData']['item'] = collect($receiver['invoice_data'])->map(function ($invoice) {
                 return $invoice;
