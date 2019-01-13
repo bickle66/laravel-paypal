@@ -35,7 +35,7 @@
 - [Support](#support)
 - [PayPal Documentation](https://github.com/srmklive/laravel-paypal/blob/master/PAYPALDOCS.md)
 
-    
+
 <a name="introduction"></a>
 ## Introduction
 
@@ -57,7 +57,7 @@ https://github.com/srmklive/laravel-paypal-demo
 
 This package uses the classic paypal express checkout. Refer to this link on how to create API credentials:
 
-https://developer.paypal.com/docs/classic/api/apiCredentials/#create-an-api-signature 
+https://developer.paypal.com/docs/classic/api/apiCredentials/#create-an-api-signature
 
 <a name="installation"></a>
 ## Installation
@@ -68,13 +68,13 @@ https://developer.paypal.com/docs/classic/api/apiCredentials/#create-an-api-sign
 composer require srmklive/paypal:~1.0
 ```
 
-* Add the service provider to your `$providers` array in `config/app.php` file like: 
+* Add the service provider to your `$providers` array in `config/app.php` file like:
 
 ```php
 Srmklive\PayPal\Providers\PayPalServiceProvider::class
 ```
 
-* Add the alias to your `$aliases` array in `config/app.php` file like: 
+* Add the alias to your `$aliases` array in `config/app.php` file like:
 
 ```php
 'PayPal' => Srmklive\PayPal\Facades\PayPal::class
@@ -226,10 +226,10 @@ $data['shipping_discount'] = round((10 / 100) * $total, 2);
 
     ```php
     $response = $provider->setExpressCheckout($data);
-    
+
     // Use the following line when creating recurring payment profiles (subscriptions)
     $response = $provider->setExpressCheckout($data, true);
-    
+
      // This will redirect user to PayPal
     return redirect($response['paypal_link']);
     ```
@@ -240,9 +240,9 @@ $data['shipping_discount'] = round((10 / 100) * $total, 2);
     ```php
     $response = $provider->getExpressCheckoutDetails($token);
     ```
-    
+
 <a name="usage-ec-doexpresscheckoutpayment"></a>
-* **DoExpressCheckoutPayment** 
+* **DoExpressCheckoutPayment**
 
     ```php
     // Note that 'token', 'PayerID' are values returned by PayPal when it redirects to success page after successful verification of user's PayPal info.
@@ -254,7 +254,7 @@ $data['shipping_discount'] = round((10 / 100) * $total, 2);
 
     ```php
     $response = $provider->refundTransaction($transactionid);
-    
+
     // To issue partial refund, you must provide the amount as well for refund:
     $response = $provider->refundTransaction($transactionid, 9.99);      
     ```
@@ -266,7 +266,7 @@ $data['shipping_discount'] = round((10 / 100) * $total, 2);
     // The $token is the value returned from SetExpressCheckout API call
     $response = $provider->createBillingAgreement($token);
     ```    
-    
+
 <a name="usage-ec-doreferencetransaction"></a>    
 * **DoReferenceTransaction**
 
@@ -276,7 +276,7 @@ $data['shipping_discount'] = round((10 / 100) * $total, 2);
     // $amount to withdraw from the given BillingAgreement defaults to $. To overwrite use $provider->addOptions
     $response = $provider->doReferenceTransaction($token,$action,$amount);
     ```  
- 
+
 <a name="usage-ec-gettransactiondetails"></a>    
 * **GetTransactionDetails**
 
@@ -297,11 +297,11 @@ $data['shipping_discount'] = round((10 / 100) * $total, 2);
         'PROFILESTARTDATE' => $startdate,
         'DESC' => $profile_desc,
         'BILLINGPERIOD' => 'Month', // Can be 'Day', 'Week', 'SemiMonth', 'Month', 'Year'
-        'BILLINGFREQUENCY' => 1, // 
+        'BILLINGFREQUENCY' => 1, //
         'AMT' => 10, // Billing amount for each billing cycle
-        'CURRENCYCODE' => 'USD', // Currency code 
+        'CURRENCYCODE' => 'USD', // Currency code
         'TRIALBILLINGPERIOD' => 'Day',  // (Optional) Can be 'Day', 'Week', 'SemiMonth', 'Month', 'Year'
-        'TRIALBILLINGFREQUENCY' => 10, // (Optional) set 12 for monthly, 52 for yearly 
+        'TRIALBILLINGFREQUENCY' => 10, // (Optional) set 12 for monthly, 52 for yearly
         'TRIALTOTALBILLINGCYCLES' => 1, // (Optional) Change it accordingly
         'TRIALAMT' => 0, // (Optional) Change it accordingly
     ];
@@ -328,10 +328,10 @@ $data['shipping_discount'] = round((10 / 100) * $total, 2);
     ```php
     // Cancel recurring payment profile
     $response = $provider->cancelRecurringPaymentsProfile($profileid);
-    
+
     // Suspend recurring payment profile
     $response = $provider->suspendRecurringPaymentsProfile($profileid);
-    
+
     // Reactivate recurring payment profile
     $response = $provider->reactivateRecurringPaymentsProfile($profileid);    
     ```    
@@ -354,18 +354,18 @@ PayPal::setProvider('adaptive_payments');
 $data = [
     'receivers'  => [
         [
-            'email' => 'johndoe@example.com',
+            'email' => 'johndoe@example.com', // (Optional) You can also use accountId instead of email
             'amount' => 10,
             'primary' => true,
         ],
         [
-            'email' => 'janedoe@example.com',
+            'email' => 'janedoe@example.com', // (Optional) You can also use accountId instead of email
             'amount' => 5,
             'primary' => false
         ]
     ],
     'payer' => 'EACHRECEIVER', // (Optional) Describes who pays PayPal fees. Allowed values are: 'SENDER', 'PRIMARYRECEIVER', 'EACHRECEIVER' (Default), 'SECONDARYONLY'
-    'return_url' => url('payment/success'), 
+    'return_url' => url('payment/success'),
     'cancel_url' => url('payment/cancel'),
 ];
 
@@ -394,15 +394,15 @@ Suppose you have set IPN URL to **http://example.com/ipn/notify/** in PayPal. To
     ```php
     Route::post('ipn/notify','PayPalController@postNotify'); // Change it accordingly in your application
     ```
-          
+
 * Open `App\Http\Middleware\VerifyCsrfToken.php` and add your IPN route to `$excluded` routes variable.
 
     ```php
     'ipn/notify'
     ```
-    
+
 * Write the following code in the function where you will parse IPN response:    
-    
+
     ```php
     /**
      * Retrieve IPN Response From PayPal
@@ -413,12 +413,12 @@ Suppose you have set IPN URL to **http://example.com/ipn/notify/** in PayPal. To
     {
         // Import the namespace Srmklive\PayPal\Services\ExpressCheckout first in your controller.
         $provider = new ExpressCheckout;
-        
+
         $request->merge(['cmd' => '_notify-validate']);
         $post = $request->all();        
-        
+
         $response = (string) $provider->verifyIPN($post);
-        
+
         if ($response === 'VERIFIED') {                      
             // Your code goes here ...
         }                            
@@ -471,7 +471,7 @@ $response = $provider->createMonthlySubscription($token, $amount, $description);
 // To create recurring yearly subscription on PayPal
 $response = $provider->createYearlySubscription($token, $amount, $description);
 ```
-            
+
 <a name="support"></a>
 ## Support
 
@@ -481,4 +481,3 @@ This plugin only supports Laravel 5.1 or greater.
   * Fork this repository.
   * Implement your features.
   * Generate pull request.
- 
